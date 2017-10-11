@@ -29,7 +29,8 @@ end
 
 local Map = class('Map')
 
-function Map:initialize(width, height, camera)
+function Map:initialize(game, width, height, camera)
+  self.game = game
   self.width  = width
   self.height = height
   self.camera = camera
@@ -140,7 +141,7 @@ function Map:countItems()
 end
 
 function Map:victory()
-  self:reset()
+  self.game:gotoState('Victory')
 end
 
 function Map:pickup()
