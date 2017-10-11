@@ -46,6 +46,7 @@ function Grenade:filter(other)
   local kind = other.class.name
   if kind == 'Block'
   or kind == 'Player'
+  or kind == 'Lava'
   or(kind == 'Guardian' and not self.ignoresParent)
   then
     return "bounce"
@@ -74,12 +75,14 @@ function Grenade:moveColliding(dt)
 
   for i=1, len do
     local col = cols[1]
-    if col.other.class.name == 'Player' then
+    local other = col.other
+    local kind = other.class.name
+    if kind == 'Player' or kind == 'Lava' then
       self:destroy()
       return
     end
 
-    if col.other ~= parent or not self.ignoresParent then
+    if other ~= parent or not self.ignoresParent then
       local nx, ny = col.normal.x, col.normal.y
       self:changeVelocityByCollisionNormal(nx,ny, bounciness)
       self:emitCollisionSound(nx, ny)
