@@ -60,15 +60,38 @@ function Map:reset()
     Block:new(self.world, i*width/tilesOnFloor, height-32, width/tilesOnFloor, 32, true)
   end
 
-  -- groups of blocks
+
+  -- Upper-left quadrant
+
+  for i=1, 20 do
+    local prev = { x = math.random(100, width/2-100), y = math.random(100, height/2 - 100) }
+    local waypoints = {prev}
+    for i=2, math.random(2,6) do
+      local point = {
+        x = math.random(math.max(100, prev.x - 200), math.min(width/2-100, prev.x + 200)),
+        y = math.random(math.max(100, prev.y - 200), math.min(height/2-100, prev.y + 200))
+      }
+      waypoints[i] = point
+      prev = point
+    end
+    Platform:new(self.world, waypoints)
+  end
+
+  Pickup:new( self,
+              self.world,
+              random(100, width/2-200),
+              random(100, height/2-150),
+              media.img.K)
+
+  -- Lower-left quadrant
+
   local l,t,w,h, area
-  for i=1,60 do
+  for i=1,15 do
     w = random(100, 400)
     h = random(100, 400)
     area = w * h
-    l = random(100, width-w-200)
-    t = random(100, height-h-100)
-
+    l = random(100, width/2-w-200)
+    t = random(height/2 + 100, height-h-100)
 
     for i=1, math.floor(area/7000) do
       Block:new( self.world,
@@ -80,59 +103,77 @@ function Map:reset()
     end
   end
 
-  for i=1,10 do
+  for i=1,7 do
     Guardian:new( self.world,
                   self.player,
                   self.camera,
-                  random(100, width-200),
-                  random(100, height-150) )
+                  random(100, width/2-200),
+                  random(height/2 + 100, height-150) )
   end
 
-  for i=1,20 do
+  Pickup:new( self,
+              self.world,
+              random(100, width/5),
+              random(height/2 + 300, height - 150),
+              media.img.N)
+
+
+  -- Upper-right
+  for i=1,15 do
+    w = random(100, 400)
+    h = random(100, 400)
+    area = w * h
+    l = random(width/2+100, width-w-200)
+    t = random(100, height-h-100)
+
+    for i=1, math.floor(area/7000) do
+      Block:new( self.world,
+                 random(l, l+w),
+                 random(t, t+h),
+                 random(32, 100),
+                 random(32, 100),
+                 random() > 0.75 )
+    end
+  end
+
+  for i=1,7 do
+    Bug:new( self.world,
+             self.player,
+             self.camera,
+             random(width/2 + 100, width-200),
+             random(100, height/2-150) )
+  end
+
+  Pickup:new( self,
+              self.world,
+              random(width/2 + 300, width - 150),
+              random(100, height/2-150),
+              media.img.O)
+
+
+  -- Lower-right
+  for i=1,7 do
     local min_w, max_w = 100, 500
     local min_h, max_h = 100, 500
     local edge_distance = 100
     local w = min_w + random(max_w - min_w)
     local h = min_h + random(max_h - min_h)
     Lava:new( self.world,
-              edge_distance + random(width - w - 2 * edge_distance),
-              edge_distance + random(height - h - 2 * edge_distance),
+              width/2 + edge_distance + random(width/2 - w - 2 * edge_distance),
+              height/2 + edge_distance + random(height/2 - h - 2 * edge_distance),
               w,
               h,
               self.player )
   end
 
-  for i=1, 10 do
-    local prev = { x = math.random(100, width-100), y = math.random(100, height - 100) }
-    local waypoints = {prev}
-    for i=2, math.random(2,6) do
-      local point = {
-        x = math.random(math.max(100, prev.x - 200), math.min(width-100, prev.x + 200)),
-        y = math.random(math.max(100, prev.y - 200), math.min(height-100, prev.y + 200))
-      }
-      waypoints[i] = point
-      prev = point
-    end
-    Platform:new(self.world, waypoints)
-  end
 
-  self.pickupCounter = 0
-  for letter in ("K O N G"):gmatch('%S+') do
-    Pickup:new( self,
-                self.world,
-                random(100, width-200),
-                random(100, height-150),
-                media.img[letter])
-    self.pickupCounter = self.pickupCounter + 1
-  end
+  Pickup:new( self,
+              self.world,
+              random(width/2 + 300, width - 150),
+              random(height/2 + 300, height - 150),
+              media.img.G)
 
-  for i=1,10 do
-    Bug:new( self.world,
-             self.player,
-             self.camera,
-             random(100, width-200),
-             random(100, height-150) )
-  end
+  self.pickupCounter = 4
 
 end
 

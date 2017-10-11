@@ -5,15 +5,6 @@ local Map        = require 'map'
 
 local updateRadius = 100 -- how "far away from the camera" things stop being updated
 local drawDebug   = false  -- draw bump's debug info, fps and memory
-local instructions = [[
-  bump.lua demo
-
-    left,right: move
-    up:     jump/fly
-    return: reset map
-    delete: run garbage collection
-    tab:    toggle debug info (%s)
-]]
 
 local Play = {}
 
@@ -38,9 +29,6 @@ function Play:draw()
   love.graphics.setColor(255, 255, 255)
 
   local w,h = love.graphics.getDimensions()
-
-  local msg = instructions:format(tostring(drawDebug))
-  love.graphics.printf(msg, w - 200, 10, 200, 'left')
 
   if drawDebug then
     local statistics = ("fps: %d, mem: %dKB\n sfx: %d, items: %d"):format(love.timer.getFPS(), collectgarbage("count"), media.countInstances(), self.map:countItems())
