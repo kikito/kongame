@@ -220,9 +220,9 @@ function Player:die()
 end
 
 function Player:getColor()
+  local r = 255
   local g = math.floor(255 * self.health)
-  local r = 255 - g
-  local b = 0
+  local b = g
   return r,g,b
 end
 

@@ -7,6 +7,7 @@ local game
 
 function love.load()
   media.load()
+  love.graphics.setBackgroundColor(9, 46, 78)
   game = Game:new()
 end
 

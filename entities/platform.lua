@@ -61,6 +61,17 @@ function Platform:initialize(world, waypoints)
 
   Entity.initialize(self, world, 0, 0, width, height)
 
+  local color = math.random(1, 4)
+  if color == 1 then
+    self.r, self.g, self.b = 240, 89, 93
+  elseif color == 2 then
+    self.r, self.g, self.b = 51, 180, 68
+  elseif color == 2 then
+    self.r, self.g, self.b = 57, 133, 198
+  else
+    self.r, self.g, self.b = 43, 79, 172
+  end
+
   self.waypoints = waypoints
   self.nextWaypointIndex = 1
   self.prevX, self.prevY = 0,0
@@ -105,7 +116,7 @@ function Platform:update(dt)
 end
 
 function Platform:draw(drawDebug)
-  love.graphics.setColor(0,200,200)
+  love.graphics.setColor(self.r, self.g, self.b)
 
   local start = self.waypoints[1]
   local finish = self.waypoints[#self.waypoints]
@@ -118,12 +129,11 @@ function Platform:draw(drawDebug)
     love.graphics.setColor(200,200,200)
     local p = self.waypoints[self.nextWaypointIndex]
     love.graphics.rectangle('line', p.x - 8, p.y - 8, 16, 16)
-
-    local cx, cy = self:getCenter()
-    love.graphics.circle('line', cx, cy, 3)
   end
 
   util.drawFilledRectangle(self.l, self.t, self.w, self.h, 220, 220, 0)
+  local cx, cy = self:getCenter()
+  love.graphics.circle('line', cx, cy, 3)
 end
 
 function Platform:getPointCoords()
