@@ -36,7 +36,13 @@ local function gotoNextWaypoint(self)
   local p = self.waypoints[self.nextWaypointIndex]
   self.l, self.t = p.x - self.w / 2, p.y - self.h / 2
 
-  self.nextWaypointIndex = (self.nextWaypointIndex % #self.waypoints) + 1
+  if self.nextWaypointIndex == #self.waypoints then
+    self.direction = -1
+  elseif self.nextWaypointIndex == 1 then
+    self.direction = 1
+  end
+
+  self.nextWaypointIndex = self.nextWaypointIndex + self.direction
 end
 
 local function advanceTowardsNextWaypoint(self, advance)
@@ -58,6 +64,7 @@ function Platform:initialize(world, waypoints)
   self.waypoints = waypoints
   self.nextWaypointIndex = 1
   self.prevX, self.prevY = 0,0
+  self.direction         = 1 -- 1 = forwards, -1 = backwards
 
   gotoNextWaypoint(self)
   self.world:update(self, self.l, self.t)
@@ -100,17 +107,12 @@ end
 function Platform:draw(drawDebug)
   love.graphics.setColor(0,200,200)
 
-  for i=1,#self.waypoints do
-    local p = self.waypoints[i]
-    love.graphics.circle('line', p.x, p.y, 5)
-  end
+  local start = self.waypoints[1]
+  local finish = self.waypoints[#self.waypoints]
+  love.graphics.circle('line', start.x, start.y, 5)
+  love.graphics.circle('fill', finish.x, finish.y, 5)
 
-  if #self.waypoints == 2 then
-    love.graphics.line(self:getPointCoords())
-  else
-    love.graphics.polygon('line', self:getPointCoords())
-  end
-
+  love.graphics.line(self:getPointCoords())
 
   if drawDebug then
     love.graphics.setColor(200,200,200)
