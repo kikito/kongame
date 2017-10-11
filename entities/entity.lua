@@ -53,4 +53,12 @@ function Entity:getUpdateOrder()
   return self.class.updateOrder or 10000
 end
 
+function Entity:__tostring()
+  return ("%s %f %f [%f %f]"):format(self.class.name,
+                                     self.l,
+                                     self.t,
+                                     self.w,
+                                     self.h)
+end
+
 return Entity

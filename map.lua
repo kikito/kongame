@@ -15,6 +15,7 @@ local Player      = require 'entities.player'
 local Block       = require 'entities.block'
 local Guardian    = require 'entities.guardian'
 local Lava        = require 'entities.lava'
+local Pickup      = require 'entities.pickup'
 
 local random = math.random
 
@@ -98,6 +99,16 @@ function Map:reset()
               self.player )
   end
 
+  self.pickupCounter = 0
+  for letter in ("K O N G"):gmatch('%S+') do
+    Pickup:new( self,
+                self.world,
+                random(100, width-200),
+                random(100, height-150),
+                media.img[letter])
+    self.pickupCounter = self.pickupCounter + 1
+  end
+
 end
 
 
@@ -126,6 +137,17 @@ end
 
 function Map:countItems()
   return self.world:countItems()
+end
+
+function Map:victory()
+  self:reset()
+end
+
+function Map:pickup()
+  self.pickupCounter = self.pickupCounter - 1
+  if self.pickupCounter == 0 then
+    self:victory()
+  end
 end
 
 

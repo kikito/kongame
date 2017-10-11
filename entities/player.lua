@@ -43,9 +43,15 @@ end
 
 function Player:filter(other)
   local kind = other.class.name
-  if kind == 'Guardian' or 
-     kind == 'Block' or
-     kind == 'Lava' then return 'slide' end
+  if kind == 'Guardian'
+  or kind == 'Block' then
+    return 'slide'
+  end
+
+  if kind == 'Lava'
+  or kind == 'Pickup' then
+    return 'cross'
+  end
 end
 
 function Player:changeVelocityByKeys(dt)
@@ -122,11 +128,16 @@ function Player:moveColliding(dt)
   local next_l, next_t, cols, len = world:move(self, future_l, future_t, self.filter)
 
   for i=1, len do
-    local col = cols[i]
-    self:changeVelocityByCollisionNormal(col.normal.x, col.normal.y, bounciness)
-    self:checkIfOnGround(col.normal.y)
-    if col.other.class.name == "Lava" and not self.isDead then
+    local col   = cols[i]
+    local other = col.other
+    local kind  = other.class.name
+    if kind == "Guardian" or kind == "Block" then
+      self:changeVelocityByCollisionNormal(col.normal.x, col.normal.y, bounciness)
+      self:checkIfOnGround(col.normal.y)
+    elseif kind == "Lava" and not self.isDead then
       self:die()
+    elseif kind == "Pickup" then
+      other:pickup()
     end
   end
 
