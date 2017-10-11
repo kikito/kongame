@@ -30,8 +30,6 @@ local brakeAccel    = 2000
 local jumpVelocity  = 400 -- the initial upwards velocity when jumping
 local width         = 48
 local height        = 42
-local beltWidth     = 2
-local beltHeight    = 8
 
 local abs = math.abs
 
@@ -159,15 +157,6 @@ end
 
 function Player:takeHit()
   if self.isDead then return end
-  if self.health == 1 then
-    for i=1,3 do
-      Debris:new(self.world,
-                 math.random(self.l, self.l + self.w),
-                 self.t + self.h / 2,
-                 255,255,255)
-
-    end
-  end
   self.health = self.health - 0.7
   if self.health <= 0 then
     self:die()
@@ -216,11 +205,6 @@ function Player:draw(drawDebug)
     else
       love.graphics.draw(media.img.kong, self.l, self.t)
     end
-  end
-
-
-  if self:canFly() then
-    util.drawFilledRectangle(self.l - beltWidth, self.t + self.h/2 , self.w + 2 * beltWidth, beltHeight, 255,255,255)
   end
 
   if drawDebug then
