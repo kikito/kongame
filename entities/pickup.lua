@@ -1,5 +1,6 @@
 local class = require 'lib.middleclass'
 
+local media = require 'media'
 local Entity = require 'entities.entity'
 local Debris = require 'entities.debris'
 
@@ -49,6 +50,7 @@ function Pickup:pickup()
                math.random(self.t, self.t + self.h),
                255,255,0)
   end
+  media.sfx.pickup:play()
   self.map:pickup()
 end
 

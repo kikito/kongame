@@ -29,6 +29,7 @@ media.load = function()
     grenade_wall_hit
     guardian_death guardian_shoot guardian_target_acquired
     player_jump player_full_health player_propulsion
+    pickup
   ]]
 
   media.sfx = {}
