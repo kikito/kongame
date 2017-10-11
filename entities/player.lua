@@ -45,7 +45,9 @@ end
 
 function Player:filter(other)
   local kind = other.class.name
-  if kind == 'Guardian' or kind == 'Block' then return 'slide' end
+  if kind == 'Guardian' or 
+     kind == 'Block' or
+     kind == 'Lava' then return 'slide' end
 end
 
 function Player:changeVelocityByKeys(dt)
@@ -125,6 +127,9 @@ function Player:moveColliding(dt)
     local col = cols[i]
     self:changeVelocityByCollisionNormal(col.normal.x, col.normal.y, bounciness)
     self:checkIfOnGround(col.normal.y)
+    if col.other.class.name == "Lava" and not self.isDead then
+      self:die()
+    end
   end
 
   self.l, self.t = next_l, next_t
