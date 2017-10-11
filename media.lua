@@ -42,7 +42,7 @@ media.load = function()
   media.music:setLooping(true)
 
   local img_names = [[
-    kong K O N G
+    kong K O N G title victory
   ]]
 
   media.img = {}

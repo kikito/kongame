@@ -1,7 +1,9 @@
+local media = require "media"
+
 local Start = {}
 
 function Start:draw()
-  love.graphics.printf("Press any key to begin", 0, 300, 800, 'center')
+  love.graphics.draw(media.img.title)
 end
 
 function Start:keypressed(k)

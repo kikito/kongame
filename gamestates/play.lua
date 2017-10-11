@@ -39,6 +39,7 @@ end
 function Play:keypressed(k)
   if k=="escape" then self:gotoState('Start') end
   if k=="tab"    then drawDebug = not drawDebug end
+  if k=="7"      then self:gotoState('Victory') end
   if k=="return" then
     self.map:reset()
   end
