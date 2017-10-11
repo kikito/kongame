@@ -32,7 +32,7 @@ function Bug:initialize(world, target, camera, x, y)
   for i=1,len do
     other = others[i]
     kind = other.class.name
---    if kind == "Block" or kind == "Lava" then world:remove(other) end
+    if kind == "Block" or kind == "Lava" then world:remove(other) end
   end
 end
 
