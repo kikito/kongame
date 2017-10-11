@@ -17,6 +17,7 @@ local Guardian    = require 'entities.guardian'
 local Lava        = require 'entities.lava'
 local Platform    = require 'entities.platform'
 local Pickup      = require 'entities.pickup'
+local Bug         = require 'entities.bug'
 
 local random = math.random
 
@@ -123,6 +124,14 @@ function Map:reset()
                 random(100, height-150),
                 media.img[letter])
     self.pickupCounter = self.pickupCounter + 1
+  end
+
+  for i=1,10 do
+    print(Bug:new( self.world,
+             self.player,
+             self.camera,
+             random(100, width-200),
+             random(100, height-150) ))
   end
 
 end
