@@ -14,6 +14,7 @@ local media       = require 'media'
 local Player      = require 'entities.player'
 local Block       = require 'entities.block'
 local Guardian    = require 'entities.guardian'
+local Lava        = require 'entities.lava'
 
 local random = math.random
 
@@ -81,6 +82,20 @@ function Map:reset()
                   self.camera,
                   random(100, width-200),
                   random(100, height-150) )
+  end
+
+  for i=1,20 do
+    local min_w, max_w = 100, 500
+    local min_h, max_h = 100, 500
+    local edge_distance = 100
+    local w = min_w + random(max_w - min_w)
+    local h = min_h + random(max_h - min_h)
+    Lava:new( self.world,
+              edge_distance + random(width - w - 2 * edge_distance),
+              edge_distance + random(height - h - 2 * edge_distance),
+              w,
+              h,
+              self.player )
   end
 
 end
