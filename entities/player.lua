@@ -39,27 +39,30 @@ function Player:initialize(map, world, x,y)
   self.deadCounter = 0
   self.map = map
   self.facing = "left"
+  self.rvx = 0
 end
 
 function Player:filter(other)
   local kind = other.class.name
   if kind == 'Guardian'
-  or kind == 'Block' then
+  or kind == 'Block'
+  or (kind == 'Platform' and self.t + self.h <= other.prevY)
+  then
     return 'slide'
   end
 
   if kind == 'Lava'
-  or kind == 'Pickup' then
+  or kind == 'Pickup'
+  then
     return 'cross'
   end
 end
 
 function Player:changeVelocityByKeys(dt)
-  self.isJumpingOrFlying = false
+
+  local vx = self.rvx
 
   if self.isDead then return end
-
-  local vx, vy = self.vx, self.vy
 
   if love.keyboard.isDown("left") then
     vx = vx - dt * (vx > 0 and brakeAccel or runAccel)
@@ -76,17 +79,24 @@ function Player:changeVelocityByKeys(dt)
     end
   end
 
-  if love.keyboard.isDown("up") and (self:canFly() or self.onGround) then -- jump/fly
-    vy = -jumpVelocity
-    self.isJumpingOrFlying = true
+  self.rvx = vx
+
+  if self.ground then
+    self.vx = self.rvx + self.ground.vx
+  else
+    self.vx = self.rvx
   end
 
-  self.vx, self.vy = vx, vy
+  self.isJumpingOrFlying = false
+  if love.keyboard.isDown("up") and (self:canFly() or self.ground) then -- jump/fly
+    self.vy = -jumpVelocity
+    self.isJumpingOrFlying = true
+  end
 end
 
 function Player:playEffects()
   if self.isJumpingOrFlying then
-    if self.onGround then
+    if self.ground then
       media.sfx.player_jump:play()
     else
       Puff:new(self.world,
@@ -114,26 +124,27 @@ function Player:playEffects()
   end
 end
 
-function Player:checkIfOnGround(ny)
-  if ny < 0 then self.onGround = true end
+function Player:checkIfOnGround(ny, other)
+  if ny < 0 then
+    self.ground = other
+  end
 end
 
 function Player:moveColliding(dt)
-  self.onGround = false
   local world = self.world
 
   local future_l = self.l + self.vx * dt
   local future_t = self.t + self.vy * dt
 
-  local next_l, next_t, cols, len = world:move(self, future_l, future_t, self.filter)
+  local next_l, next_t, cols, len = world:check(self, future_l, future_t, self.filter)
 
   for i=1, len do
     local col   = cols[i]
     local other = col.other
     local kind  = other.class.name
-    if kind == "Guardian" or kind == "Block" then
-      self:changeVelocityByCollisionNormal(col.normal.x, col.normal.y, bounciness)
-      self:checkIfOnGround(col.normal.y)
+    if kind == "Guardian" or kind == "Block" or kind == "Platform" then
+      self:changeVelocityByCollisionNormal(col)
+      self:checkIfOnGround(col.normal.y, other)
     elseif kind == "Lava" and not self.isDead then
       self:die()
     elseif kind == "Pickup" then
@@ -142,6 +153,22 @@ function Player:moveColliding(dt)
   end
 
   self.l, self.t = next_l, next_t
+  world:update(self, next_l, next_t)
+end
+
+function Player:changeVelocityByCollisionNormal(col)
+  local other, normal = col.other, col.normal
+  local nx, ny        = normal.x, normal.y
+  local vx, vy        = self.vx, self.vy
+
+  if (nx < 0 and vx > 0) or (nx > 0 and vx < 0) then
+    self.vx = other.vx
+    self.rvx = other.vx
+  end
+
+  if (ny < 0 and vy > 0) or (ny > 0 and vy < 0) then
+    self.vy = math.max(0, other.vy)
+  end
 end
 
 function Player:updateHealth(dt)
@@ -162,6 +189,8 @@ function Player:update(dt)
   self:changeVelocityByKeys(dt)
   self:changeVelocityByGravity(dt)
   self:playEffects()
+
+  self.ground = nil
 
   self:moveColliding(dt)
 end
@@ -219,10 +248,16 @@ function Player:draw(drawDebug)
   end
 
   if drawDebug then
-    if self.onGround then
+    if self.ground then
       util.drawFilledRectangle(self.l, self.t + self.h - 4, self.w, 4, 255,255,255)
     end
   end
+end
+
+function Player:setGround(other)
+  self.ground = other
+  self.t      = self.ground.t - self.h
+  self.world:update(self, self.l, self.t)
 end
 
 return Player

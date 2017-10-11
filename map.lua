@@ -15,6 +15,7 @@ local Player      = require 'entities.player'
 local Block       = require 'entities.block'
 local Guardian    = require 'entities.guardian'
 local Lava        = require 'entities.lava'
+local Platform    = require 'entities.platform'
 local Pickup      = require 'entities.pickup'
 
 local random = math.random
@@ -98,6 +99,20 @@ function Map:reset()
               w,
               h,
               self.player )
+  end
+
+  for i=1, 10 do
+    local prev = { x = math.random(100, width-100), y = math.random(100, height - 100) }
+    local waypoints = {prev}
+    for i=2, math.random(2,6) do
+      local point = {
+        x = math.random(math.max(100, prev.x - 200), math.min(width-100, prev.x + 200)),
+        y = math.random(math.max(100, prev.y - 200), math.min(height-100, prev.y + 200))
+      }
+      waypoints[i] = point
+      prev = point
+    end
+    Platform:new(self.world, waypoints)
   end
 
   self.pickupCounter = 0

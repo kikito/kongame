@@ -25,13 +25,7 @@ function Play:enteredState()
 end
 
 function Play:update(dt)
-  -- Note that we only update elements that are visible to the camera. This is optional
-  -- replace the map:update(dt, camera:getVisible()) with the following line to update everything
-  -- self.map:update(dt)
-  local l,t,w,h = self.camera:getVisible()
-  l,t,w,h = l - updateRadius, t - updateRadius, w + updateRadius * 2, h + updateRadius * 2
-
-  self.map:update(dt, l,t,w,h)
+  self.map:update(dt)
   self.camera:setPosition(self.map.player:getCenter())
   self.camera:update(dt)
 end
@@ -60,11 +54,6 @@ function Play:keypressed(k)
   if k=="return" then
     self.map:reset()
   end
-end
-
-function Play:exitedState()
-  self.camera = nil
-  self.map    = nil
 end
 
 return Play
