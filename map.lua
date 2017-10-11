@@ -127,11 +127,11 @@ function Map:reset()
   end
 
   for i=1,10 do
-    print(Bug:new( self.world,
+    Bug:new( self.world,
              self.player,
              self.camera,
              random(100, width-200),
-             random(100, height-150) ))
+             random(100, height-150) )
   end
 
 end
