@@ -1,5 +1,5 @@
 local media      = require 'media'
-local Game       = require 'Game'
+local Game       = require 'game'
 
 require 'gamestates.play'
 
