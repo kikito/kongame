@@ -1,7 +1,7 @@
 # bump.lua demo
 
 This is a demo of [bump.lua](http://github.com/kikito/bump.lua)
-It requires [LÖVE](http://love2d.org to work properly)
+It requires [LÖVE](http://love2d.org) to work properly
 
 ![demo](https://kikito.github.io/bump.lua/img/bump-demo.gif)
 
