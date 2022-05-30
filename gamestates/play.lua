@@ -26,7 +26,7 @@ function Play:draw()
     self.map:draw(drawDebug, l,t,w,h)
   end)
 
-  love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(1, 1, 1)
 
   local w,h = love.graphics.getDimensions()
 
